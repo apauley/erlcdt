@@ -1,0 +1,11 @@
+{application, erlcdt,
+ [
+  {description, "Erlang Concrete Data Types"},
+  {vsn, "0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
