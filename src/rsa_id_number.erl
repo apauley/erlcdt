@@ -8,6 +8,8 @@
 
 -export([parse_str/1]).
 
+-include_lib("proper/include/proper.hrl").
+
 -record(rsa_id_number, {}).
 
 -type rsa_id_number() :: #rsa_id_number{}.
