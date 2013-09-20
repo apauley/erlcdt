@@ -1,6 +1,6 @@
 %%% @author Andreas Pauley
 %%% @doc
-%%% ID number parsing and validation specific to the Republic of South Africa
+%%% ID number parsing and validation specific to the Republic of South Africa.
 %%% @end
 %%% Created : 15 Sep 2013 by Andreas Pauley
 
@@ -8,12 +8,10 @@
 
 -export([parse_str/1]).
 
--include_lib("proper/include/proper.hrl").
-
 -record(rsa_id_number, {}).
 
 -type rsa_id_number() :: #rsa_id_number{}.
 
 -spec parse_str(string()) -> rsa_id_number().
-parse_str(IDNumber) ->
-  IDNumber.
+parse_str(_IDNumber) ->
+  #rsa_id_number{}.
