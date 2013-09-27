@@ -11,7 +11,7 @@
 all() ->
   [proper_spec_test].
 
--define(DEFAULT_OPTS, [{numtests,500},{to_file, user}]).
+-define(DEFAULT_OPTS, [{numtests,250},{to_file, user}]).
 
 -spec test() -> ok.
 test() ->
