@@ -9,7 +9,8 @@
 -export([test/0]).
 
 all() ->
-  [proper_spec_test].
+  [proper_spec_test,
+   id_length_test].
 
 -define(DEFAULT_OPTS, [{numtests,250},{to_file, user}]).
 
@@ -22,3 +23,14 @@ test() ->
 proper_spec_test() ->
   _MFAs = [] = proper:check_specs(rsa_id_number, ?DEFAULT_OPTS),
   true.
+
+-spec id_length_test() -> true.
+id_length_test() ->
+  ok = print_env(),
+  {error, invalid_length} = rsa_id_number:parse_str(""),
+  true.
+
+print_env() ->
+  Envs = os:getenv(),
+  [io:format("~p~n", [Env]) || Env <- Envs],
+  Envs.
