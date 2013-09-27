@@ -12,7 +12,8 @@ all() ->
   [proper_spec_test,
    id_length_test].
 
--define(DEFAULT_OPTS, [{numtests,250},{to_file, user}]).
+-define(DEFAULT_PROPER_OPTS, [{numtests,5000},{to_file, user}]).
+-define(TRAVIS_PROPER_OPTS,  [{numtests,10000},{to_file, user}]).
 
 -spec test() -> ok.
 test() ->
@@ -21,16 +22,25 @@ test() ->
 
 -spec proper_spec_test() -> true.
 proper_spec_test() ->
-  _MFAs = [] = proper:check_specs(rsa_id_number, ?DEFAULT_OPTS),
+  _MFAs = [] = proper:check_specs(rsa_id_number, proper_options()),
   true.
 
 -spec id_length_test() -> true.
 id_length_test() ->
-  ok = print_env(),
-  {error, invalid_length} = rsa_id_number:parse_str(""),
+  {error, {invalid_length, 0}} = rsa_id_number:parse_str(""),
+  {error, {invalid_length, 12}} = rsa_id_number:parse_str("123456789012"),
+  {error, {invalid_length, 14}} = rsa_id_number:parse_str("12345678901234"),
   true.
 
-print_env() ->
-  Envs = os:getenv(),
-  [io:format("~p~n", [Env]) || Env <- Envs],
-  Envs.
+
+%% Testhelper Functions
+proper_options() ->
+  proper_options(is_running_on_travis()).
+
+proper_options(_OnTravis=true) ->
+  ?TRAVIS_PROPER_OPTS;
+proper_options(_OnTravis=false) ->
+  ?DEFAULT_PROPER_OPTS.
+
+is_running_on_travis() ->
+  is_list(os:getenv("TRAVIS_OTP_RELEASE")).
