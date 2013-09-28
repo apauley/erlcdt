@@ -8,7 +8,7 @@
 
 -export([test/0]).
 
--include("rsa_id_number.hrl").
+-include("../include/rsa_id_number.hrl").
 
 all() ->
   [proper_spec_test,
@@ -32,7 +32,12 @@ proper_spec_test() ->
 
 -spec valid_id_test() -> true.
 valid_id_test() ->
-  {ok, #rsa_id_number{}} = rsa_id_number:from_str("4304041794068"),
+  {ok, #rsa_id_number{birth_date={1943,4,4}}} = rsa_id_number:from_str("4304041794068"),
+  true.
+
+-spec birth_date_test() -> true.
+birth_date_test() ->
+  {ok, {1943,4,4}} = rsa_id_number:parse_birth_date("430404"),
   true.
 
 -spec id_length_test() -> true.
