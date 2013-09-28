@@ -7,7 +7,7 @@
 -module(rsa_id_number).
 
 -export([from_str/1,
-         parse_birth_date/1]).
+         date_from_str/1]).
 
 -include("../include/rsa_id_number.hrl").
 
@@ -31,32 +31,46 @@ from_str(IDNumber) ->
 -spec parse_str(string()) -> rsa_id_number() | {error, validation_error()}.
 parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   DOBStr = string:substr(IDNumber,1,6),
-  {ok, DOB} = parse_birth_date(DOBStr),
+  {ok, DOB} = date_from_str(DOBStr),
   {ok, #rsa_id_number{birth_date=DOB}};
 parse_str(IDNumber) when is_list(IDNumber) ->
   throw({parse_error, {invalid_length, length(IDNumber)}});
 parse_str(IDNumber) ->
   throw({parse_error, {invalid_id_string, IDNumber}}).
 
--spec parse_birth_date(string()) -> {ok, calendar:date()} | {error, {invalid_birth_date, any()}}.
-parse_birth_date(DOBStr) ->
+-spec date_from_str(string()) -> {ok, calendar:date()} | {error, {invalid_birth_date, any()}}.
+date_from_str(DOBStr) ->
   try
-    parse_birth_date1(DOBStr)
+    parse_birth_date(DOBStr)
   catch
     error:badarg ->
       {error, {invalid_birth_date, DOBStr}}
   end.
 
-parse_birth_date1(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->
-  Year  = list_to_integer([$1,$9,Y1,Y2]),
+parse_birth_date(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->
+  %% The date of birth in an RSA ID number only has 2 digits for the year.
+  %% Make a guess that an ID number with a birthdate corresponding to today or earlier
+  %% has a birthdate in this century.
+  %% And then we guess that an ID number with a birthdate corresponding to tomorrow or later
+  %% has a birthdate in the previous century.
+  Year  = list_to_integer([Y1,Y2]) + 2000,
   Month = list_to_integer([M1,M2]),
   Day   = list_to_integer([D1,D2]),
-  DOB={Year, Month, Day},
+  DOB   = guess_century({Year, Month, Day}),
+
   case calendar:valid_date(DOB) of
     true  ->
       {ok, DOB};
     false ->
       {error, {invalid_birth_date, DOBStr}}
   end;
-parse_birth_date1(Other) ->
+parse_birth_date(Other) ->
   {error, {invalid_birth_date, Other}}.
+
+-spec guess_century(calendar:date()) -> calendar:date().
+guess_century(Date={Year,Month,Day}) ->
+  Today = erlcdt_utils:today(),
+  case (Date =< Today) of
+    true  -> Date;
+    false -> {Year - 100, Month, Day}
+  end.

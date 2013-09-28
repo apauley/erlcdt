@@ -37,7 +37,26 @@ valid_id_test() ->
 
 -spec birth_date_test() -> true.
 birth_date_test() ->
-  {ok, {1943,4,4}} = rsa_id_number:parse_birth_date("430404"),
+  %% The date of birth in an RSA ID number only has 2 digits for the year.
+  %% Make a guess that an ID number with a birthdate corresponding to today or earlier
+  %% has a birthdate in this century.
+  %% And then we guess that an ID number with a birthdate corresponding to tomorrow or later
+  %% has a birthdate in the previous century.
+  {ok, {1999,12,31}} = rsa_id_number:date_from_str("991231"),
+  {ok, {2000,01,01}} = rsa_id_number:date_from_str("000101"),
+
+  Yesterday = erlcdt_utils:yesterday(),
+  DOBYesterday = erlcdt_utils:dob_str(Yesterday),
+  {ok, Yesterday} = rsa_id_number:date_from_str(DOBYesterday),
+  
+  Today = erlcdt_utils:today(),
+  DOBToday = erlcdt_utils:dob_str(Today),
+  {ok, Today} = rsa_id_number:date_from_str(DOBToday),
+
+  Tomorrow = {TomorrowYear,TomorrowMonth,TomorrowDayOfMonth} = erlcdt_utils:tomorrow(),
+  DOBTomorrow = erlcdt_utils:dob_str(Tomorrow),
+  TomorrowInLastCentury = {TomorrowYear - 100, TomorrowMonth, TomorrowDayOfMonth},
+  {ok, TomorrowInLastCentury} = rsa_id_number:date_from_str(DOBTomorrow),
   true.
 
 -spec id_length_test() -> true.
