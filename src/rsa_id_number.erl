@@ -8,12 +8,7 @@
 
 -export([from_str/1]).
 
--record(rsa_id_number, {birth_date    :: calendar:date(),
-                        gender_digit  :: non_neg_integer(),
-                        sequence_nr   :: string(),
-                        citizen_digit :: non_neg_integer(),
-                        digit_a       :: non_neg_integer(),
-                        control_digit :: non_neg_integer()}).
+-include("rsa_id_number.hrl").
 
 -type rsa_id_number() :: #rsa_id_number{}.
 
@@ -21,10 +16,11 @@
                             {invalid_id_string, any()} |
                             {invalid_birth_date, string()}.
 
--spec from_str(string()) -> rsa_id_number() | {error, validation_error()}.
+-spec from_str(string()) -> {ok, rsa_id_number()} | {error, validation_error()}.
 from_str(IDNumber) ->
   try
-    parse_str(IDNumber)
+    ID = parse_str(IDNumber),
+    {ok, ID}
   catch
     throw:{parse_error, Error} ->
       {error, Error}
@@ -39,12 +35,12 @@ parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
     #rsa_id_number{birth_date=DOB}
   catch
     error:badarg ->
-      {error, {invalid_birth_date, DOBStr}}
+      throw({parse_error, {invalid_birth_date, DOBStr}})
   end;
 parse_str(IDNumber) when is_list(IDNumber) ->
-  {error, {invalid_length, length(IDNumber)}};
+  throw({parse_error, {invalid_length, length(IDNumber)}});
 parse_str(IDNumber) ->
-  {error, {invalid_id_string, IDNumber}}.
+  throw({parse_error, {invalid_id_string, IDNumber}}).
 
 -spec parse_birth_date(string()) -> calendar:date().
 parse_birth_date(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->

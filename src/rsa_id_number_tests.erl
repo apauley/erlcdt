@@ -8,8 +8,11 @@
 
 -export([test/0]).
 
+-include("rsa_id_number.hrl").
+
 all() ->
   [proper_spec_test,
+   valid_id_test,
    id_length_test,
    id_type_test,
    id_dob_test].
@@ -25,6 +28,11 @@ test() ->
 -spec proper_spec_test() -> true.
 proper_spec_test() ->
   _MFAs = [] = proper:check_specs(rsa_id_number, proper_options()),
+  true.
+
+-spec valid_id_test() -> true.
+valid_id_test() ->
+  {ok, #rsa_id_number{}} = rsa_id_number:from_str("4304041794068"),
   true.
 
 -spec id_length_test() -> true.
