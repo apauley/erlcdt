@@ -3,10 +3,10 @@
 
 -module(rsa_id_number_tests).
 
+-export([test/0]).
+
 -include_lib("proper/include/proper.hrl").
 -include_lib("eunit/include/eunit.hrl").
-
--export([test/0]).
 
 -include("../include/rsa_id_number.hrl").
 
@@ -17,17 +17,14 @@ all() ->
    id_type_test,
    id_dob_test].
 
--define(DEFAULT_PROPER_OPTS, [{numtests,5000},{to_file, user}]).
--define(TRAVIS_PROPER_OPTS,  [{numtests,10000},{to_file, user}]).
-
--spec test() -> ok.
+-spec test() -> true.
 test() ->
   Bools = [?MODULE:Test() || Test <- all()],
   true = lists:all(fun(Bool) -> Bool end, Bools).
 
 -spec proper_spec_test() -> true.
 proper_spec_test() ->
-  _MFAs = [] = proper:check_specs(rsa_id_number, proper_options()),
+  _MFAs = [] = proper:check_specs(rsa_id_number, erlcdt_testhelper:proper_options()),
   true.
 
 -spec valid_id_test() -> true.
@@ -77,16 +74,3 @@ id_dob_test() ->
   {error, {invalid_birth_date, "123456"}} = rsa_id_number:from_str("1234567890123"),
   {error, {invalid_birth_date, [0,0,0,0,0,0]}} = rsa_id_number:from_str([0,0,0,0,0,0,0,0,0,0,0,0,0]),
   true.
-
-
-%% Testhelper Functions
-proper_options() ->
-  proper_options(is_running_on_travis()).
-
-proper_options(_OnTravis=true) ->
-  ?TRAVIS_PROPER_OPTS;
-proper_options(_OnTravis=false) ->
-  ?DEFAULT_PROPER_OPTS.
-
-is_running_on_travis() ->
-  is_list(os:getenv("TRAVIS_OTP_RELEASE")).

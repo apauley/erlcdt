@@ -4,21 +4,28 @@
 -module(erlcdt_utils).
 
 -export([today/0,
-        yesterday/0,
-        tomorrow/0,
-        dob_str/1,
-        strip_century/1]).
+         yesterday/0,
+         tomorrow/0,
+         dob_str/1,
+         strip_century/1]).
 
 -spec dob_str(calendar:date()) -> string().
 dob_str({Year, Month, Day}) ->
   YY = strip_century(Year),
   lists:flatten(io_lib:format("~2..0w~2..0w~2..0w",[YY, Month, Day])).
 
--spec strip_century(non_neg_integer() | string()) -> non_neg_integer().
+-spec strip_century(non_neg_integer() | string()) -> non_neg_integer() | {error, {invalid_year,any()}}.
 strip_century(Year) when is_integer(Year) ->
   strip_century(integer_to_list(Year));
-strip_century([_C1,_C2,Y1,Y2]) ->
-  list_to_integer([Y1,Y2]).
+strip_century(Year=[_C1,_C2,Y1,Y2]) ->
+  try
+    list_to_integer([Y1,Y2])
+  catch
+    error:badarg ->
+      {error, {invalid_year, Year}}
+  end;
+strip_century(Year) ->
+  {error, {invalid_year, Year}}.
 
 -spec today() -> calendar:date().
 today() ->
