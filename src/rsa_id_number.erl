@@ -53,7 +53,8 @@ parse_birth_date(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->
   %% has a birthdate in this century.
   %% And then we guess that an ID number with a birthdate corresponding to tomorrow or later
   %% has a birthdate in the previous century.
-  Year  = list_to_integer([Y1,Y2]) + 2000,
+
+  Year  = add_this_century([Y1,Y2]),
   Month = list_to_integer([M1,M2]),
   Day   = list_to_integer([D1,D2]),
   DOB   = guess_century({Year, Month, Day}),
@@ -74,3 +75,9 @@ guess_century(Date={Year,Month,Day}) ->
     true  -> Date;
     false -> {Year - 100, Month, Day}
   end.
+
+-spec add_this_century(string()) -> non_neg_integer().
+add_this_century([Y1, Y2]) ->
+  {Year, _Month, _Day} = erlcdt_utils:today(),
+  [C1,C2,_,_] = integer_to_list(Year),
+  list_to_integer([C1,C2,Y1,Y2]).
