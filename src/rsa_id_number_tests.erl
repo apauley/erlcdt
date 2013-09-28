@@ -29,21 +29,21 @@ proper_spec_test() ->
 
 -spec id_length_test() -> true.
 id_length_test() ->
-  {error, {invalid_length, 0}} = rsa_id_number:parse_str(""),
-  {error, {invalid_length, 12}} = rsa_id_number:parse_str("123456789012"),
-  {error, {invalid_length, 14}} = rsa_id_number:parse_str("12345678901234"),
+  {error, {invalid_length, 0}} = rsa_id_number:from_str(""),
+  {error, {invalid_length, 12}} = rsa_id_number:from_str("123456789012"),
+  {error, {invalid_length, 14}} = rsa_id_number:from_str("12345678901234"),
   true.
 
 -spec id_type_test() -> true.
 id_type_test() ->
-  {error, {invalid_id_string,1234567890123}} = rsa_id_number:parse_str(1234567890123),
-  {error, {invalid_id_string,hello}} = rsa_id_number:parse_str(hello),
+  {error, {invalid_id_string,1234567890123}} = rsa_id_number:from_str(1234567890123),
+  {error, {invalid_id_string,hello}} = rsa_id_number:from_str(hello),
   true.
 
 -spec id_dob_test() -> true.
 id_dob_test() ->
-  {error, {invalid_birth_date, "123456"}} = rsa_id_number:parse_str("1234567890123"),
-  {error, {invalid_birth_date, [0,0,0,0,0,0]}} = rsa_id_number:parse_str([0,0,0,0,0,0,0,0,0,0,0,0,0]),
+  {error, {invalid_birth_date, "123456"}} = rsa_id_number:from_str("1234567890123"),
+  {error, {invalid_birth_date, [0,0,0,0,0,0]}} = rsa_id_number:from_str([0,0,0,0,0,0,0,0,0,0,0,0,0]),
   true.
 
 
