@@ -81,3 +81,10 @@ id_dob_test() ->
   {error, {invalid_birth_date, "123456"}} = rsa_id_number:from_str("1234567890123"),
   {error, {invalid_birth_date, [0,0,0,0,0,0]}} = rsa_id_number:from_str([0,0,0,0,0,0,0,0,0,0,0,0,0]),
   true.
+
+-spec id_gender_test() -> true.
+id_gender_test() ->
+  {error, {invalid_gender_digit, "x"}} = rsa_id_number:from_str("430404x794068"),
+  {ok, ID} = rsa_id_number:from_str("4304041794068"),
+  female = rsa_id_number:gender(ID),
+  true.

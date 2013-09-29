@@ -7,6 +7,7 @@
 -module(rsa_id_number).
 
 -export([from_str/1,
+         gender/1,
          date_from_str/1]).
 
 -include("../include/rsa_id_number.hrl").
@@ -28,11 +29,30 @@ from_str(IDNumber) ->
       {error, Error}
   end.
 
+-spec date_from_str(string()) -> {ok, calendar:date()} | {error, {invalid_birth_date, any()}}.
+date_from_str(DOBStr) ->
+  try
+    parse_birth_date(DOBStr)
+  catch
+    error:badarg ->
+      {error, {invalid_birth_date, DOBStr}}
+  end.
+
+-spec gender(rsa_id_number()) -> male | female.
+gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit >= 5 ->
+  male;
+gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit < 5 ->
+  female.
+
+%% -------------------------------------------------------------------
+%% Internal Functions
+%% -------------------------------------------------------------------
+
 -spec parse_str(string()) -> rsa_id_number() | {error, validation_error()}.
 parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   DOBStr = string:substr(IDNumber,1,6),
   {ok, DOB} = date_from_str(DOBStr),
-  GenderDigit = list_to_integer(string:substr(IDNumber,7,1)),
+  GenderDigit = parse_gender(string:substr(IDNumber,7,1)),
   SequenceNumber = list_to_integer(string:substr(IDNumber,8,3)),
   CitizenDigit = list_to_integer(string:substr(IDNumber,11,1)),
   DigitA = list_to_integer(string:substr(IDNumber,12,1)),
@@ -47,15 +67,6 @@ parse_str(IDNumber) when is_list(IDNumber) ->
   throw({parse_error, {invalid_length, length(IDNumber)}});
 parse_str(IDNumber) ->
   throw({parse_error, {invalid_id_string, IDNumber}}).
-
--spec date_from_str(string()) -> {ok, calendar:date()} | {error, {invalid_birth_date, any()}}.
-date_from_str(DOBStr) ->
-  try
-    parse_birth_date(DOBStr)
-  catch
-    error:badarg ->
-      {error, {invalid_birth_date, DOBStr}}
-  end.
 
 parse_birth_date(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->
   %% The date of birth in an RSA ID number only has 2 digits for the year.
@@ -77,6 +88,14 @@ parse_birth_date(DOBStr=[Y1,Y2,M1,M2,D1,D2]) ->
   end;
 parse_birth_date(Other) ->
   {error, {invalid_birth_date, Other}}.
+
+parse_gender(GenderDigit) ->
+  try
+    list_to_integer(GenderDigit)
+  catch
+    error:badarg ->
+      throw({parse_error, {invalid_gender_digit, GenderDigit}})
+  end.
 
 -spec guess_century(calendar:date()) -> calendar:date().
 guess_century(Date={Year,Month,Day}) ->
