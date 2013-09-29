@@ -104,3 +104,8 @@ id_citizen_test() ->
   {ok, ID2} = rsa_id_number:from_str("4304041794168"),
   foreign = rsa_id_number:citizen(ID2),
   true.
+
+-spec id_digit_a_test() -> true.
+id_digit_a_test() ->
+  {error, {invalid_digit_a, "x"}} = rsa_id_number:from_str("43040417940x8"),
+  true.
