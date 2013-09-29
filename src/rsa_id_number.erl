@@ -32,7 +32,17 @@ from_str(IDNumber) ->
 parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   DOBStr = string:substr(IDNumber,1,6),
   {ok, DOB} = date_from_str(DOBStr),
-  {ok, #rsa_id_number{birth_date=DOB}};
+  GenderDigit = list_to_integer(string:substr(IDNumber,7,1)),
+  SequenceNumber = list_to_integer(string:substr(IDNumber,8,3)),
+  CitizenDigit = list_to_integer(string:substr(IDNumber,11,1)),
+  DigitA = list_to_integer(string:substr(IDNumber,12,1)),
+  ControlDigit = list_to_integer(string:substr(IDNumber,13,1)),
+  {ok, #rsa_id_number{birth_date=DOB,
+                      gender_digit=GenderDigit,
+                      sequence_nr=SequenceNumber,
+                      citizen_digit=CitizenDigit,
+                      digit_a=DigitA,
+                      control_digit=ControlDigit}};
 parse_str(IDNumber) when is_list(IDNumber) ->
   throw({parse_error, {invalid_length, length(IDNumber)}});
 parse_str(IDNumber) ->
