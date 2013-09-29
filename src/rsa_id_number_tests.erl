@@ -85,11 +85,22 @@ id_dob_test() ->
 -spec id_gender_test() -> true.
 id_gender_test() ->
   {error, {invalid_gender_digit, "x"}} = rsa_id_number:from_str("430404x794068"),
-  {ok, ID} = rsa_id_number:from_str("4304041794068"),
-  female = rsa_id_number:gender(ID),
+  {ok, ID1} = rsa_id_number:from_str("4304041794068"),
+  female = rsa_id_number:gender(ID1),
+  {ok, ID2} = rsa_id_number:from_str("4304045794068"),
+  male = rsa_id_number:gender(ID2),
   true.
 
 -spec id_sequence_test() -> true.
 id_sequence_test() ->
   {error, {invalid_sequence_nr, "zzz"}} = rsa_id_number:from_str("4304041zzz068"),
+  true.
+
+-spec id_citizen_test() -> true.
+id_citizen_test() ->
+  {error, {invalid_citizen_digit, "x"}} = rsa_id_number:from_str("4304041794x68"),
+  {ok, ID1} = rsa_id_number:from_str("4304041794068"),
+  rsa = rsa_id_number:citizen(ID1),
+  {ok, ID2} = rsa_id_number:from_str("4304041794168"),
+  foreign = rsa_id_number:citizen(ID2),
   true.

@@ -8,6 +8,7 @@
 
 -export([from_str/1,
          gender/1,
+         citizen/1,
          date_from_str/1]).
 
 -include("../include/rsa_id_number.hrl").
@@ -44,6 +45,14 @@ gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit >= 5 ->
 gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit < 5 ->
   female.
 
+-spec citizen(rsa_id_number()) -> rsa | foreign | {error, {invalid_citizen_digit, any()}}.
+citizen(#rsa_id_number{citizen_digit=CitizenDigit}) when CitizenDigit =:= 0 ->
+  rsa;
+citizen(#rsa_id_number{citizen_digit=CitizenDigit}) when CitizenDigit =:= 1 ->
+  foreign;
+citizen(#rsa_id_number{citizen_digit=CitizenDigit}) ->
+  {error, {invalid_citizen_digit, CitizenDigit}}.
+
 %% -------------------------------------------------------------------
 %% Internal Functions
 %% -------------------------------------------------------------------
@@ -54,7 +63,7 @@ parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   {ok, DOB} = date_from_str(DOBStr),
   GenderDigit = parse_gender(string:substr(IDNumber,7,1)),
   SequenceNumber = parse_sequence_nr(string:substr(IDNumber,8,3)),
-  CitizenDigit = list_to_integer(string:substr(IDNumber,11,1)),
+  CitizenDigit = parse_citizen_digit(string:substr(IDNumber,11,1)),
   DigitA = list_to_integer(string:substr(IDNumber,12,1)),
   ControlDigit = list_to_integer(string:substr(IDNumber,13,1)),
   {ok, #rsa_id_number{birth_date=DOB,
@@ -103,6 +112,14 @@ parse_sequence_nr(SequenceNumber) ->
   catch
     error:badarg ->
       throw({parse_error, {invalid_sequence_nr, SequenceNumber}})
+  end.
+
+parse_citizen_digit(CitizenDigit) ->
+  try
+    list_to_integer(CitizenDigit)
+  catch
+    error:badarg ->
+      throw({parse_error, {invalid_citizen_digit, CitizenDigit}})
   end.
 
 -spec guess_century(calendar:date()) -> calendar:date().
