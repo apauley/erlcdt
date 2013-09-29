@@ -65,7 +65,7 @@ parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   SequenceNumber = parse_sequence_nr(string:substr(IDNumber,8,3)),
   CitizenDigit = parse_citizen_digit(string:substr(IDNumber,11,1)),
   DigitA = parse_digit_a(string:substr(IDNumber,12,1)),
-  ControlDigit = list_to_integer(string:substr(IDNumber,13,1)),
+  ControlDigit = parse_control_digit(string:substr(IDNumber,13,1)),
   {ok, #rsa_id_number{birth_date=DOB,
                       gender_digit=GenderDigit,
                       sequence_nr=SequenceNumber,
@@ -128,6 +128,14 @@ parse_digit_a(DigitA) ->
   catch
     error:badarg ->
       throw({parse_error, {invalid_digit_a, DigitA}})
+  end.
+
+parse_control_digit(ControlDigit) ->
+  try
+    list_to_integer(ControlDigit)
+  catch
+    error:badarg ->
+      throw({parse_error, {invalid_control_digit, ControlDigit}})
   end.
 
 -spec guess_century(calendar:date()) -> calendar:date().

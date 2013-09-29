@@ -109,3 +109,8 @@ id_citizen_test() ->
 id_digit_a_test() ->
   {error, {invalid_digit_a, "x"}} = rsa_id_number:from_str("43040417940x8"),
   true.
+
+-spec id_control_digit_test() -> true.
+id_control_digit_test() ->
+  {error, {invalid_control_digit, "c"}} = rsa_id_number:from_str("430404179406c"),
+  true.
