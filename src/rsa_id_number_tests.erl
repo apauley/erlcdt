@@ -88,3 +88,8 @@ id_gender_test() ->
   {ok, ID} = rsa_id_number:from_str("4304041794068"),
   female = rsa_id_number:gender(ID),
   true.
+
+-spec id_sequence_test() -> true.
+id_sequence_test() ->
+  {error, {invalid_sequence_nr, "zzz"}} = rsa_id_number:from_str("4304041zzz068"),
+  true.

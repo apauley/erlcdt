@@ -53,7 +53,7 @@ parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   DOBStr = string:substr(IDNumber,1,6),
   {ok, DOB} = date_from_str(DOBStr),
   GenderDigit = parse_gender(string:substr(IDNumber,7,1)),
-  SequenceNumber = list_to_integer(string:substr(IDNumber,8,3)),
+  SequenceNumber = parse_sequence_nr(string:substr(IDNumber,8,3)),
   CitizenDigit = list_to_integer(string:substr(IDNumber,11,1)),
   DigitA = list_to_integer(string:substr(IDNumber,12,1)),
   ControlDigit = list_to_integer(string:substr(IDNumber,13,1)),
@@ -95,6 +95,14 @@ parse_gender(GenderDigit) ->
   catch
     error:badarg ->
       throw({parse_error, {invalid_gender_digit, GenderDigit}})
+  end.
+
+parse_sequence_nr(SequenceNumber) ->
+  try
+    list_to_integer(SequenceNumber)
+  catch
+    error:badarg ->
+      throw({parse_error, {invalid_sequence_nr, SequenceNumber}})
   end.
 
 -spec guess_century(calendar:date()) -> calendar:date().
