@@ -14,6 +14,7 @@
          yesterday/0,
          tomorrow/0,
          dob_str/1,
+         odd_even_elements/1,
          strip_century/1]).
 
 -spec dob_str(calendar:date()) -> string().
@@ -47,3 +48,15 @@ yesterday() ->
 tomorrow() ->
   calendar:gregorian_days_to_date(calendar:date_to_gregorian_days(today()) + 1).
 
+-spec odd_even_elements(list(any())) -> {list(any()), list(any())}.
+odd_even_elements(List) ->
+  F = fun(Elem, Acc) ->
+          {IsOdd, Odds, Evens} = Acc,
+          case IsOdd of
+            true  -> {not IsOdd, Odds ++ [Elem], Evens};
+            false -> {not IsOdd, Odds, Evens ++ [Elem]}
+          end
+      end,
+  Initial = {_IsOdd=true, _Odds=[], _Evens=[]},
+  {_, Odds, Evens} = lists:foldl(F, Initial, List),
+  {Odds, Evens}.

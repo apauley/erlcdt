@@ -13,8 +13,10 @@
 -export([from_str/1,
          gender/1,
          citizen/1,
+         checksum/1,
          date_from_str/1]).
 
+-include("../include/erlcdt_types.hrl").
 -include("../include/rsa_id_number.hrl").
 
 -type rsa_id_number() :: #rsa_id_number{}.
@@ -69,7 +71,7 @@ parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   SequenceNumber = parse_sequence_nr(string:substr(IDNumber,8,3)),
   CitizenDigit = parse_citizen_digit(string:substr(IDNumber,11,1)),
   DigitA = parse_digit_a(string:substr(IDNumber,12,1)),
-  ChecksumDigit = parse_checksum_digit(string:substr(IDNumber,13,1)),
+  ChecksumDigit = parse_checksum_digit(string:substr(IDNumber,1,12), string:substr(IDNumber,13,1)),
   {ok, #rsa_id_number{birth_date=DOB,
                       gender_digit=GenderDigit,
                       sequence_nr=SequenceNumber,
@@ -134,13 +136,38 @@ parse_digit_a(DigitA) ->
       throw({parse_error, {invalid_digit_a, DigitA}})
   end.
 
-parse_checksum_digit(ChecksumDigit) ->
+parse_checksum_digit(IDData, ChecksumDigit) when length(IDData) =:= 12 ->
   try
-    list_to_integer(ChecksumDigit)
+    Actual = list_to_integer(ChecksumDigit),
+    Expected = checksum(IDData),
+    Expected = Actual
   catch
+    error:{badmatch, Bad} ->
+      throw({parse_error, {invalid_checksum, Bad}});
     error:badarg ->
       throw({parse_error, {invalid_checksum, ChecksumDigit}})
   end.
+
+-spec checksum(numeric_string()) -> integer().
+checksum(IDStr) when length(IDStr) =:= 13 ->
+  IDData = string:substr(IDStr,1,12),
+  checksum(IDData);  
+checksum(IDData) when length(IDData) =:= 12 ->
+  {Odds, Evens} = erlcdt_utils:odd_even_elements(IDData),
+  OddInts = [list_to_integer([I]) || I <- Odds],
+  OddSum = lists:sum(OddInts),
+  EvenInt = list_to_integer(Evens) * 2,
+  EvenInts = [list_to_integer([I]) || I <- integer_to_list(EvenInt)],
+  EvenSum = lists:sum(EvenInts),
+  TempSum = OddSum + EvenSum,
+  [_,SecondChar|_] = integer_to_list(TempSum),
+  SecondDigit = [SecondChar],
+  CheckSum1 = integer_to_list(10 - list_to_integer(SecondDigit)),
+  LastDigit = list_to_integer([lists:last(CheckSum1)]),
+  LastDigit;
+checksum(_ID) ->
+  %% Indicates failure
+  -1.
 
 -spec guess_century(calendar:date()) -> calendar:date().
 guess_century(Date={Year,Month,Day}) ->

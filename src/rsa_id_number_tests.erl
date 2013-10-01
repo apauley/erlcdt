@@ -94,7 +94,7 @@ id_gender_test() ->
   {error, {invalid_gender_digit, "x"}} = rsa_id_number:from_str("430404x794068"),
   {ok, ID1} = rsa_id_number:from_str("4304041794068"),
   female = rsa_id_number:gender(ID1),
-  {ok, ID2} = rsa_id_number:from_str("4304045794068"),
+  {ok, ID2} = rsa_id_number:from_str("4304045794064"),
   male = rsa_id_number:gender(ID2),
   true.
 
@@ -108,7 +108,7 @@ id_citizen_test() ->
   {error, {invalid_citizen_digit, "x"}} = rsa_id_number:from_str("4304041794x68"),
   {ok, ID1} = rsa_id_number:from_str("4304041794068"),
   rsa = rsa_id_number:citizen(ID1),
-  {ok, ID2} = rsa_id_number:from_str("4304041794168"),
+  {ok, ID2} = rsa_id_number:from_str("4304041794167"),
   foreign = rsa_id_number:citizen(ID2),
   true.
 
@@ -120,5 +120,5 @@ id_digit_a_test() ->
 -spec id_checksum_digit_test() -> true.
 id_checksum_digit_test() ->
   {error, {invalid_checksum, "c"}} = rsa_id_number:from_str("430404179406c"),
-  %% {error, {invalid_checksum, 1}} = rsa_id_number:from_str("4304041794061"),
+  {error, {invalid_checksum, 1}}   = rsa_id_number:from_str("4304041794061"),
   true.

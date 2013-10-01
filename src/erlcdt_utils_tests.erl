@@ -31,3 +31,10 @@ proper_spec_test() ->
   _MFAs = [] = proper:check_specs(erlcdt_utils,
                                   erlcdt_testhelper:proper_options(?DEFAULT_PROPER_OPTS, ?TRAVIS_PROPER_OPTS)),
   true.
+
+-spec odd_even_elements_test() -> true.
+odd_even_elements_test() ->
+  {[8,16], [2]} = erlcdt_utils:odd_even_elements([8,2,16]),
+  {[1,3,5], [2,4]} = erlcdt_utils:odd_even_elements([1,2,3,4,5]),
+  {"hlo", "el"} = erlcdt_utils:odd_even_elements("hello"),
+  true.
