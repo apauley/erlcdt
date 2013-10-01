@@ -35,9 +35,9 @@ valid_id_test() ->
   794 = ID#rsa_id_number.sequence_nr,
   0 = ID#rsa_id_number.citizen_digit,
   6 = ID#rsa_id_number.digit_a,
-  8 = ID#rsa_id_number.control_digit,
+  8 = ID#rsa_id_number.checksum_digit,
   true.
-
+ 
 -spec birth_date_test() -> true.
 birth_date_test() ->
   %% The date of birth in an RSA ID number only has 2 digits for the year.
@@ -110,7 +110,8 @@ id_digit_a_test() ->
   {error, {invalid_digit_a, "x"}} = rsa_id_number:from_str("43040417940x8"),
   true.
 
--spec id_control_digit_test() -> true.
-id_control_digit_test() ->
-  {error, {invalid_control_digit, "c"}} = rsa_id_number:from_str("430404179406c"),
+-spec id_checksum_digit_test() -> true.
+id_checksum_digit_test() ->
+  {error, {invalid_checksum, "c"}} = rsa_id_number:from_str("430404179406c"),
+  %% {error, {invalid_checksum, 1}} = rsa_id_number:from_str("4304041794061"),
   true.
