@@ -1,4 +1,11 @@
 %%% @author Andreas Pauley
+%%% @copyright © 2013 Andreas Pauley https://github.com/apauley/erlcdt/blob/master/LICENSE.md
+%%% @doc
+%%% Unit tests for rsa_id_number
+%%%
+%%% This code is part of the "Erlang Concrete Data Types" library:
+%%% https://github.com/apauley/erlcdt
+%%% @end
 %%% Created : 20 Sep 2013 by Andreas Pauley
 
 -module(rsa_id_number_tests).

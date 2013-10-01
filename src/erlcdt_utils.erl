@@ -1,4 +1,11 @@
 %%% @author Andreas Pauley
+%%% @copyright © 2013 Andreas Pauley https://github.com/apauley/erlcdt/blob/master/LICENSE.md
+%%% @doc
+%%% Utility functions used that are commonly used by other modules.
+%%%
+%%% This code is part of the "Erlang Concrete Data Types" library:
+%%% https://github.com/apauley/erlcdt
+%%% @end
 %%% Created : 28 Sep 2013 by Andreas Pauley
 
 -module(erlcdt_utils).

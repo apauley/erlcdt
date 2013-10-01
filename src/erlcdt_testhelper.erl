@@ -1,4 +1,11 @@
 %%% @author Andreas Pauley
+%%% @copyright © 2013 Andreas Pauley https://github.com/apauley/erlcdt/blob/master/LICENSE.md
+%%% @doc
+%%% Helper functions used by test the test suites.
+%%%
+%%% This code is part of the "Erlang Concrete Data Types" library:
+%%% https://github.com/apauley/erlcdt
+%%% @end
 %%% Created : 29 Sep 2013 by Andreas Pauley
 
 -module(erlcdt_testhelper).
