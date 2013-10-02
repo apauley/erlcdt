@@ -14,7 +14,7 @@
          proper_options/2]).
 
 -define(DEFAULT_PROPER_OPTS, [{numtests,2000},{to_file, user}]).
--define(TRAVIS_PROPER_OPTS,  [{numtests,10000},{to_file, user}]).
+-define(TRAVIS_PROPER_OPTS,  [{numtests,5000},{to_file, user}]).
 
 -type property() :: {Key :: any(), Value :: any()}.
 -type proplist() :: list(property()).
