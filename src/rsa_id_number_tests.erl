@@ -36,13 +36,15 @@ proper_spec_test() ->
 
 -spec valid_id_test() -> true.
 valid_id_test() ->
-  {ok, ID} = rsa_id_number:from_str("4304041794068"),
+  IDStr = "4304041794068",
+  {ok, ID} = rsa_id_number:from_str(IDStr),
   {1943,4,4} = ID#rsa_id_number.birth_date,
   1 = ID#rsa_id_number.gender_digit,
   794 = ID#rsa_id_number.sequence_nr,
   0 = ID#rsa_id_number.citizen_digit,
   6 = ID#rsa_id_number.digit_a,
   8 = ID#rsa_id_number.checksum_digit,
+  IDStr = rsa_id_number:to_str(ID),
   true.
  
 -spec birth_date_test() -> true.

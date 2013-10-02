@@ -11,6 +11,7 @@
 -module(rsa_id_number).
 
 -export([from_str/1,
+         to_str/1,
          gender/1,
          citizen/1,
          checksum/1,
@@ -34,6 +35,24 @@ from_str(IDNumber) ->
       {error, Error};
     error:{badmatch, {error, Error}} ->
       {error, Error}
+  end.
+
+-spec to_str(rsa_id_number()) -> numeric_string() | {error, {invalid_id, rsa_id_number()}}.
+to_str(ID) ->
+  try
+    DOB = erlcdt_utils:dob_str(ID#rsa_id_number.birth_date),
+    
+    IntFields = [ID#rsa_id_number.gender_digit,
+                 ID#rsa_id_number.sequence_nr,
+                 ID#rsa_id_number.citizen_digit,
+                 ID#rsa_id_number.digit_a,
+                 ID#rsa_id_number.checksum_digit],
+    Fields = [DOB | [F || F <- IntFields, is_integer(F)]],
+    IDStr = io_lib:format("~s~p~3..0w~p~p~p", Fields),
+    lists:flatten(IDStr)
+  catch
+    error:badarg ->
+      {error, {invalid_id, ID}}
   end.
 
 -spec date_from_str(string()) -> {ok, calendar:date()} | {error, {invalid_birth_date, any()}}.

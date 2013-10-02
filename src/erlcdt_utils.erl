@@ -17,10 +17,18 @@
          odd_even_elements/1,
          strip_century/1]).
 
--spec dob_str(calendar:date()) -> string().
-dob_str({Year, Month, Day}) ->
+-spec dob_str(calendar:date()) -> string() | {error, {invalid_date, any()}}.
+dob_str(Date={Year,_M,_D}) ->
+  Valid = calendar:valid_date(Date) andalso length(integer_to_list(Year)) =:= 4,
+  dob_str(Date, Valid);
+dob_str(Date) ->
+  dob_str(Date, _Valid=false).
+
+dob_str({Year, Month, Day}, _Valid=true) ->
   YY = strip_century(Year),
-  lists:flatten(io_lib:format("~2..0w~2..0w~2..0w",[YY, Month, Day])).
+  lists:flatten(io_lib:format("~2..0w~2..0w~2..0w",[YY, Month, Day]));
+dob_str(Date, _Valid=false) ->
+  {error, {invalid_date, Date}}.
 
 -spec strip_century(non_neg_integer() | string()) -> non_neg_integer() | {error, {invalid_year,any()}}.
 strip_century(Year) when is_integer(Year) ->
