@@ -18,7 +18,7 @@ Currently only South African ID numbers are parsed and validated in this library
 "4304041794068"
 ```
 
-### Some useful function on ID
+### Some useful functions on ID numbers
 
 ```erlang
 3> rsa_id_number:gender(ID).
