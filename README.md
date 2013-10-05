@@ -19,15 +19,15 @@ in programs that are treated as if they are strings, when they can
 rather be converted to a specific data type that has made all the
 hidden information visible.
 
-In this library every supported type will have a from_str/1 function
+In this library every supported type will have a *from_str/1* function
 that parses it into a well-defined data type.
 
 Validation of the input may happen at parse time if it makes sense for
-the type, otherwise a separate validate/1 function will be provided
+the type, otherwise a separate *validate/1* function will be provided
 that validates the already parsed data type. In the case of RSA ID
 number, validation happens at parse time.
 
-The corresponding to_str/1 function will convert the type back to the
+The corresponding *to_str/1* function will convert the type back to the
 original string.
 
 The idea is that any input should be converted to a well-defined type

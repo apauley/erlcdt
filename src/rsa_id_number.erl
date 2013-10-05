@@ -10,6 +10,8 @@
 
 -module(rsa_id_number).
 
+-behaviour(erlcdt_parser).
+
 -export([from_str/1,
          to_str/1,
          gender/1,
