@@ -8,7 +8,21 @@ commonly used input types.
 Currently only South African ID numbers are parsed and validated in
 this library.
 
-## Use Case Philosophy
+Future additions to the library may include:
+
+ - Credit Card Numbers
+ - [MSISDNs](http://en.wikipedia.org/wiki/MSISDN)
+
+## Building
+
+This project uses rebar:
+
+```bash
+$ ./rebar get-deps compile
+$ ./rebar compile skip_deps=true eunit
+```
+
+## Usage Examples (with a bit of programming philosophy)
 
 > &ldquo;The string is a stark data structure and everywhere it is passed there is much duplication of process. It is a perfect vehicle for hiding information.&rdquo;
 >
@@ -20,21 +34,48 @@ rather be converted to a specific data type that has made all the
 hidden information visible.
 
 In this library every supported type will have a *from_str/1* function
-that parses it into a well-defined data type.
+that parses it into a well-defined data type:
+
+```erlang
+ > {ok, ID} = rsa_id_number:from_str("4304041794068").
+{ok,{rsa_id_number,{1943,4,4},1,794,0,6,8}}
+```
 
 Validation of the input may happen at parse time if it makes sense for
-the type, otherwise a separate *validate/1* function will be provided
-that validates the already parsed data type. In the case of RSA ID
-number, validation happens at parse time.
+the type, otherwise a separate *validate/1* function may be provided
+that validates the already parsed data type.
+
+In the case of RSA ID number, validation happens at parse time.
+Only a valid ID number will return an ID type.
+Invalid ID numbers will return an error when attempting to parse the ID number:
+
+```erlang
+ > rsa_id_number:from_str("4304041794067").
+{error,{invalid_checksum,7}}
+```
 
 The corresponding *to_str/1* function will convert the type back to the
 original string.
+
+```erlang
+ > rsa_id_number:to_str(ID).
+"4304041794068"
+```
 
 The idea is that any input should be converted to a well-defined type
 as soon as possible, and for the duration of the program the *type* is
 passed around as needed, not the original string. Utility functions
 can be provided that operate on the type, eg. to extract the gender
-from an ID number. Only when needed should the type be converted back
+from an ID number:
+
+```erlang
+3> rsa_id_number:gender(ID).
+female
+4> rsa_id_number:citizen(ID).
+rsa
+```
+
+Only when needed should the type be converted back
 to string, eg. for display purposes or if your storage backend cannot
 store well-defined types.
 
@@ -45,46 +86,6 @@ to functions, in conjunction with tools like
 [dialyzer](http://www.erlang.org/doc/man/dialyzer.html) and
 [proper](https://github.com/manopapad/proper) (a property-based test
 tool inspired by [QuickCheck](http://www.quviq.com/)).
-
-## Building
-
-This project uses rebar:
-
-```bash
-$ ./rebar get-deps compile
-$ ./rebar compile skip_deps=true eunit
-```
-
-## South African ID Usage Examples
-
-### Convert from string and to string
-
-```erlang
-1> {ok, ID} = rsa_id_number:from_str("4304041794068").
-{ok,{rsa_id_number,{1943,4,4},1,794,0,6,8}}
-2> rsa_id_number:to_str(ID).
-"4304041794068"
-```
-
-### Some useful functions on ID numbers
-
-```erlang
-3> rsa_id_number:gender(ID).
-female
-4> rsa_id_number:citizen(ID).
-rsa
-```
-
-### Validation
-
-Only a valid ID number will return an ID type.
-Invalid ID numbers will return an error when attempting to parse the ID number:
-
-```erlang
-5> rsa_id_number:from_str("4304041794067").
-{error,{invalid_checksum,7}}
-```
-
 
 ## Running the tests
 
