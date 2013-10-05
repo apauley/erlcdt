@@ -19,6 +19,8 @@
          checksum/1,
          date_from_str/1]).
 
+-export_type([rsa_id_number/0]).
+
 -include("../include/erlcdt_types.hrl").
 -include("../include/rsa_id_number.hrl").
 
