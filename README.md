@@ -2,17 +2,57 @@
 
 [![Build Status](https://secure.travis-ci.org/apauley/erlcdt.png?branch=master "Build Status")](http://travis-ci.org/apauley/erlcdt)
 
-This is a library that does parsing and validation in Erlang of some commonly used input types.
-My primary purpose to write this is as a place for me to play some more with property based testing in conjunction with Erlang type specifications.
+This is a library that does parsing and validation in Erlang of some
+commonly used input types.
 
-Currently only South African ID numbers are parsed and validated in this library.
+Currently only South African ID numbers are parsed and validated in
+this library.
+
+## Use Case Philosophy
+
+> &ldquo;The string is a stark data structure and everywhere it is passed there is much duplication of process. It is a perfect vehicle for hiding information.&rdquo;
+>
+> &mdash; <cite>Alan J. Perlis, [Epigrams in Programming, #34](http://www.cs.yale.edu/quotes.html)</cite>
+
+I frequently see input fields, database fields and other information
+in programs that are treated as if they are strings, when they can
+rather be converted to a specific data type that has made all the
+hidden information visible.
+
+In this library every supported type will have a from_str/1 function
+that parses it into a well-defined data type.
+
+Validation of the input may happen at parse time if it makes sense for
+the type, otherwise a separate validate/1 function will be provided
+that validates the already parsed data type. In the case of RSA ID
+number, validation happens at parse time.
+
+The corresponding to_str/1 function will convert the type back to the
+original string.
+
+The idea is that any input should be converted to a well-defined type
+as soon as possible, and for the duration of the program the *type* is
+passed around as needed, not the original string. Utility functions
+can be provided that operate on the type, eg. to extract the gender
+from an ID number. Only when needed should the type be converted back
+to string, eg. for display purposes or if your storage backend cannot
+store well-defined types.
+
+As an implementation note, I am using this library as an opportunity
+to see what benefit Erlang programs can get from adding
+[type specifications](http://www.erlang.org/doc/reference_manual/typespec.html)
+to functions, in conjunction with tools like
+[dialyzer](http://www.erlang.org/doc/man/dialyzer.html) and
+[proper](https://github.com/manopapad/proper) (a property-based test
+tool inspired by [QuickCheck](http://www.quviq.com/)).
 
 ## Building
 
 This project uses rebar:
 
 ```bash
-$ ./rebar compile
+$ ./rebar get-deps compile
+$ ./rebar compile skip_deps=true eunit
 ```
 
 ## South African ID Usage Examples
