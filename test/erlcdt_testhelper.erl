@@ -13,6 +13,9 @@
 -export([proper_options/0,
          proper_options/2]).
 
+-compile(warnings_as_errors).
+-compile(warn_missing_spec).
+
 -define(DEFAULT_PROPER_OPTS, [{numtests,2000},{to_file, user}]).
 -define(TRAVIS_PROPER_OPTS,  [{numtests,2000},{to_file, user}]).
 

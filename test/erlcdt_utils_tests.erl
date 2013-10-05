@@ -10,29 +10,17 @@
 
 -module(erlcdt_utils_tests).
 
--export([test/0]).
-
 -include_lib("proper/include/proper.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 -define(DEFAULT_PROPER_OPTS, [{numtests,250},{to_file, user}]).
 -define(TRAVIS_PROPER_OPTS,  [{numtests,500},{to_file, user}]).
 
-all() ->
-  [proper_spec_test].
-
--spec test() -> true.
-test() ->
-  Bools = [?MODULE:Test() || Test <- all()],
-  true = lists:all(fun(Bool) -> Bool end, Bools).
-
--spec proper_spec_test() -> true.
 proper_spec_test() ->
   _MFAs = [] = proper:check_specs(erlcdt_utils,
                                   erlcdt_testhelper:proper_options(?DEFAULT_PROPER_OPTS, ?TRAVIS_PROPER_OPTS)),
   true.
 
--spec odd_even_elements_test() -> true.
 odd_even_elements_test() ->
   {[8,16], [2]} = erlcdt_utils:odd_even_elements([8,2,16]),
   {[1,3,5], [2,4]} = erlcdt_utils:odd_even_elements([1,2,3,4,5]),

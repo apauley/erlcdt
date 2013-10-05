@@ -10,31 +10,15 @@
 
 -module(rsa_id_number_tests).
 
--export([test/0]).
-
 -include_lib("proper/include/proper.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 -include("../include/rsa_id_number.hrl").
 
-all() ->
-  [proper_spec_test,
-   valid_id_test,
-   id_length_test,
-   id_type_test,
-   id_dob_test].
-
--spec test() -> true.
-test() ->
-  Bools = [?MODULE:Test() || Test <- all()],
-  true = lists:all(fun(Bool) -> Bool end, Bools).
-
--spec proper_spec_test() -> true.
 proper_spec_test() ->
   _MFAs = [] = proper:check_specs(rsa_id_number, erlcdt_testhelper:proper_options()),
   true.
 
--spec valid_id_test() -> true.
 valid_id_test() ->
   IDStr = "4304041794068",
   {ok, ID} = rsa_id_number:from_str(IDStr),
@@ -47,7 +31,6 @@ valid_id_test() ->
   IDStr = rsa_id_number:to_str(ID),
   true.
  
--spec birth_date_test() -> true.
 birth_date_test() ->
   %% The date of birth in an RSA ID number only has 2 digits for the year.
   %% Make a guess that an ID number with a birthdate corresponding to today or earlier
@@ -71,27 +54,23 @@ birth_date_test() ->
   {ok, TomorrowInLastCentury} = rsa_id_number:date_from_str(DOBTomorrow),
   true.
 
--spec id_length_test() -> true.
 id_length_test() ->
   {error, {invalid_length, 0}}  = rsa_id_number:from_str(""),
   {error, {invalid_length, 12}} = rsa_id_number:from_str("123456789012"),
   {error, {invalid_length, 14}} = rsa_id_number:from_str("12345678901234"),
   true.
 
--spec id_type_test() -> true.
 id_type_test() ->
   {error, {invalid_id_string,1234567890123}} = rsa_id_number:from_str(1234567890123),
   {error, {invalid_id_string,hello}} = rsa_id_number:from_str(hello),
   true.
 
--spec id_dob_test() -> true.
 id_dob_test() ->
   {error, {invalid_birth_date, "790230"}} = rsa_id_number:from_str("7902301794068"),
   {error, {invalid_birth_date, "123456"}} = rsa_id_number:from_str("1234567890123"),
   {error, {invalid_birth_date, [0,0,0,0,0,0]}} = rsa_id_number:from_str([0,0,0,0,0,0,0,0,0,0,0,0,0]),
   true.
 
--spec id_gender_test() -> true.
 id_gender_test() ->
   {error, {invalid_gender_digit, "x"}} = rsa_id_number:from_str("430404x794068"),
   {ok, ID1} = rsa_id_number:from_str("4304041794068"),
@@ -100,12 +79,10 @@ id_gender_test() ->
   male = rsa_id_number:gender(ID2),
   true.
 
--spec id_sequence_test() -> true.
 id_sequence_test() ->
   {error, {invalid_sequence_nr, "zzz"}} = rsa_id_number:from_str("4304041zzz068"),
   true.
 
--spec id_citizen_test() -> true.
 id_citizen_test() ->
   {error, {invalid_citizen_digit, "x"}} = rsa_id_number:from_str("4304041794x68"),
   {ok, ID1} = rsa_id_number:from_str("4304041794068"),
@@ -114,12 +91,10 @@ id_citizen_test() ->
   foreign = rsa_id_number:citizen(ID2),
   true.
 
--spec id_digit_a_test() -> true.
 id_digit_a_test() ->
   {error, {invalid_digit_a, "x"}} = rsa_id_number:from_str("43040417940x8"),
   true.
 
--spec id_checksum_digit_test() -> true.
 id_checksum_digit_test() ->
   {error, {invalid_checksum, "c"}} = rsa_id_number:from_str("430404179406c"),
   {error, {invalid_checksum, 1}}   = rsa_id_number:from_str("4304041794061"),
