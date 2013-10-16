@@ -69,9 +69,9 @@ can be provided that operate on the type, eg. to extract the gender
 from an ID number:
 
 ```erlang
-3> rsa_id_number:gender(ID).
+ > rsa_id_number:gender(ID).
 female
-4> rsa_id_number:citizen(ID).
+ > rsa_id_number:citizen(ID).
 rsa
 ```
 
