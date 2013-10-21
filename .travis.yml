@@ -2,3 +2,4 @@ language: erlang
 otp_release:
   - R16B
   - R14B03
+script: "make all"
