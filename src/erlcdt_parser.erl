@@ -10,10 +10,8 @@
 
 -module(erlcdt_parser).
 
--export([behaviour_info/1]).
+-callback from_str(String :: string()) ->
+  {ok, Type :: term()} | {error, Reason :: term()}.
 
-behaviour_info(callbacks) ->
-  [{from_str,1},
-   {to_str, 1}];
-behaviour_info(_Other) ->
-  undefined.
+-callback to_str(Type :: term()) ->
+  string() | {error, Reason :: term()}.
