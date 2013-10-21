@@ -86,7 +86,7 @@ citizen(#rsa_id_number{citizen_digit=CitizenDigit}) ->
 %% Internal Functions
 %% -------------------------------------------------------------------
 
--spec parse_str(string()) -> rsa_id_number() | {error, validation_error()}.
+-spec parse_str(string()) -> {ok, rsa_id_number()} | {error, validation_error()}.
 parse_str(IDNumber) when (is_list(IDNumber) andalso length(IDNumber) =:= 13) ->
   DOBStr = string:substr(IDNumber,1,6),
   {ok, DOB} = date_from_str(DOBStr),
