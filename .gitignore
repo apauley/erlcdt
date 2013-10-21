@@ -1,5 +1,6 @@
 ebin
 deps
+.deps_plt
 .eunit
 *.beam
 rel/*
