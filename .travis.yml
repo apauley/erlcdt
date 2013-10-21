@@ -2,4 +2,4 @@ language: erlang
 otp_release:
   - R16B
   - R15B
-script: "./rebar get-deps compile && make all"
+script: "make all"
