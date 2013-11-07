@@ -14,4 +14,4 @@
   {ok, Type :: term()} | {error, Reason :: term()}.
 
 -callback to_str(Type :: term()) ->
-  string() | {error, Reason :: term()}.
+  {ok, string()} | {error, Reason :: term()}.

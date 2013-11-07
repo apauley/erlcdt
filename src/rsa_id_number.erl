@@ -41,7 +41,7 @@ from_str(IDNumber) ->
       {error, Error}
   end.
 
--spec to_str(rsa_id_number()) -> numeric_string() | {error, {invalid_id, rsa_id_number()}}.
+-spec to_str(rsa_id_number()) -> {ok, numeric_string()} | {error, {invalid_id, rsa_id_number()}}.
 to_str(ID) ->
   try
     DOB = erlcdt_utils:dob_str(ID#rsa_id_number.birth_date),
@@ -53,7 +53,7 @@ to_str(ID) ->
                  ID#rsa_id_number.checksum_digit],
     Fields = [DOB | [F || F <- IntFields, is_integer(F)]],
     IDStr = io_lib:format("~s~p~3..0w~p~p~p", Fields),
-    lists:flatten(IDStr)
+    {ok, lists:flatten(IDStr)}
   catch
     error:badarg ->
       {error, {invalid_id, ID}}

@@ -28,7 +28,7 @@ valid_id_test() ->
   0 = ID#rsa_id_number.citizen_digit,
   6 = ID#rsa_id_number.digit_a,
   8 = ID#rsa_id_number.checksum_digit,
-  IDStr = rsa_id_number:to_str(ID),
+  {ok, IDStr} = rsa_id_number:to_str(ID),
   true.
  
 birth_date_test() ->
