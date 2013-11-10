@@ -68,7 +68,8 @@ date_from_str(DOBStr) ->
       {error, {invalid_birth_date, DOBStr}}
   end.
 
--spec gender(rsa_id_number()) -> male | female.
+-type gender() :: male | female.
+-spec gender(rsa_id_number()) -> gender().
 gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit >= 5 ->
   male;
 gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit < 5 ->

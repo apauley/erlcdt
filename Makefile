@@ -70,7 +70,8 @@ $(DEPS_PLT):
 	   --apps $(DEPS) -r deps
 
 dialyzer: $(DEPS_PLT)
-	dialyzer --fullpath --plt $(DEPS_PLT) -Wrace_conditions -r ./ebin
+	dialyzer --fullpath --plt $(DEPS_PLT) -Wrace_conditions -Wunmatched_returns -Werror_handling -r ./ebin
+# -Wunderspecs
 
 typer:
 	typer --plt $(DEPS_PLT) -r ./src
