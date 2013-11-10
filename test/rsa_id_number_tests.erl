@@ -3,7 +3,7 @@
 %%% @doc
 %%% Unit tests for rsa_id_number
 %%%
-%%% This code is part of the "Erlang Concrete Data Types" library:
+%%% This code is part of the "Erlang Common Data Types" library:
 %%% https://github.com/apauley/erlcdt
 %%% @end
 %%% Created : 20 Sep 2013 by Andreas Pauley

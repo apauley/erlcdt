@@ -1,4 +1,4 @@
-# Erlang Concrete Data Types
+# Erlang Common Data Types
 
 [![Build Status](https://secure.travis-ci.org/apauley/erlcdt.png?branch=master "Build Status")](http://travis-ci.org/apauley/erlcdt)
 

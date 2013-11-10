@@ -1,6 +1,6 @@
 {application, erlcdt,
  [
-  {description, "Erlang Concrete Data Types"},
+  {description, "Erlang Common Data Types"},
   {vsn, "0.2"},
   {registered, []},
   {applications, [

@@ -3,7 +3,7 @@
 %%% @doc
 %%% The definition of the behaviour that erlcdt library implementations should conform to.
 %%%
-%%% This code is part of the "Erlang Concrete Data Types" library:
+%%% This code is part of the "Erlang Common Data Types" library:
 %%% https://github.com/apauley/erlcdt
 %%% @end
 %%% Created : 5 Sct 2013 by Andreas Pauley
