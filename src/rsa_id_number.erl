@@ -70,10 +70,10 @@ date_from_str(DOBStr) ->
 
 -type gender() :: male | female.
 -spec gender(rsa_id_number()) -> gender().
-gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit >= 5 ->
-  male;
-gender(#rsa_id_number{gender_digit=GenderDigit}) when GenderDigit < 5 ->
-  female.
+gender(#rsa_id_number{gender_digit=GenderDigit})
+  when GenderDigit >= 5 -> male;
+gender(#rsa_id_number{gender_digit=GenderDigit})
+  when GenderDigit < 5  -> female.
 
 -spec citizen(rsa_id_number()) -> rsa | foreign | {error, {invalid_citizen_digit, any()}}.
 citizen(#rsa_id_number{citizen_digit=CitizenDigit}) when CitizenDigit =:= 0 ->
