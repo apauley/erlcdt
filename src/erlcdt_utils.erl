@@ -13,9 +13,16 @@
 -export([today/0,
          yesterday/0,
          tomorrow/0,
+         is_numeric_string/1,
          dob_str/1,
          odd_even_elements/1,
          strip_century/1]).
+
+-spec is_numeric_string(string()) -> boolean().
+is_numeric_string(String) when is_list(String) andalso length(String) > 0 ->
+  F = fun(Char) -> Char >= $0 andalso Char =< $9 end,
+  lists:all(F, String);
+is_numeric_string(_Else) -> false.
 
 -spec dob_str(calendar:date()) -> string() | {error, {invalid_date, any()}}.
 dob_str(Date={Year,_M,_D}) ->
